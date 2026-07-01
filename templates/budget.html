@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Budget - Cloud Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8 col-lg-6">
+        <div class="glass-panel">
+            <h2 class="mb-2 font-weight-bold text-gradient-cyan">Budget Configuration</h2>
+            <p class="text-muted mb-4">Define your target monthly limit for cloud service spending.</p>
+            
+            <!-- Current Status widget -->
+            <div class="p-3 mb-4 rounded" style="background: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);">
+                <div class="small text-muted">CURRENT BUDGET LIMIT</div>
+                <div class="fs-2 fw-bold text-gradient-purple">₹{{ current_limit | format_currency }}</div>
+            </div>
+            
+            <form action="{{ url_for('manage_budget') }}" method="POST">
+                <div class="mb-4">
+                    <label for="monthly_limit" class="form-label text-muted small">New Budget Limit (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                            ₹
+                        </span>
+                        <input type="number" step="0.01" min="0" class="form-control form-control-custom" id="monthly_limit" name="monthly_limit" value="{{ current_limit if current_limit > 0 else '' }}" placeholder="e.g. 5000" required style="border-radius: 0 8px 8px 0 !important;">
+                    </div>
+                    <div class="form-text text-muted small mt-2">
+                        You will receive warnings when expenditures reach 80% and 90% of this threshold, and a critical alert when exceeded.
+                    </div>
+                </div>
+                
+                <div class="d-flex gap-3">
+                    <button type="submit" class="btn btn-custom-primary flex-grow-1">
+                        <i class="bi bi-save me-2"></i>Save Budget Limit
+                    </button>
+                    <a href="{{ url_for('dashboard') }}" class="btn btn-custom-secondary">
+                        Cancel
+                    </a>
+                </div>
+            </form>
+            
+            {% if current_limit > 0 %}
+                <hr class="my-4" style="border-color: rgba(255,255,255,0.1);">
+                <form action="{{ url_for('manage_budget') }}" method="POST" onsubmit="return confirm('Are you sure you want to delete your budget? Spend tracking alerts will be disabled.');">
+                    <input type="hidden" name="action" value="delete">
+                    <button type="submit" class="btn btn-outline-danger w-100 py-2">
+                        <i class="bi bi-trash3 me-2"></i>Clear Budget Limit
+                    </button>
+                </form>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}

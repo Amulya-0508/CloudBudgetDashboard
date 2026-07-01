@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+
+{% block title %}Login - Cloud Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="glass-panel auth-card">
+        <h2 class="text-center mb-4 font-weight-bold text-gradient-cyan">Login</h2>
+        <p class="text-center text-muted mb-4">Access your cloud spending dashboard</p>
+        
+        <form action="{{ url_for('login') }}" method="POST" autocomplete="off">
+            <div class="mb-3">
+                <label for="username_or_email" class="form-label text-muted small">Username or Email</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary border-end-0 text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" class="form-control form-control-custom border-start-0" id="username_or_email" name="username_or_email" placeholder="Enter username or email" required style="border-radius: 0 8px 8px 0 !important;">
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="password" class="form-label text-muted small">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary border-end-0 text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" class="form-control form-control-custom border-start-0" id="password" name="password" placeholder="Enter password" required style="border-radius: 0 8px 8px 0 !important;">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-custom-primary w-100 mb-3">
+                <i class="bi bi-box-arrow-in-right me-2"></i>Login
+            </button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <span class="text-muted small">Don't have an account yet?</span>
+            <a href="{{ url_for('register') }}" class="text-purple text-info text-decoration-none small fw-bold ms-1">Register here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

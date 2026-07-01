@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+
+{% block title %}Register - Cloud Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="auth-wrapper">
+    <div class="glass-panel auth-card">
+        <h2 class="text-center mb-4 font-weight-bold text-gradient-purple">Create Account</h2>
+        <p class="text-center text-muted mb-4">Start managing your cloud budget today</p>
+        
+        <form action="{{ url_for('register') }}" method="POST" autocomplete="off">
+            <div class="mb-3">
+                <label for="username" class="form-label text-muted small">Username</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary border-end-0 text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-person"></i>
+                    </span>
+                    <input type="text" class="form-control form-control-custom border-start-0" id="username" name="username" placeholder="Enter username" required style="border-radius: 0 8px 8px 0 !important;">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="email" class="form-label text-muted small">Email Address</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary border-end-0 text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-envelope"></i>
+                    </span>
+                    <input type="email" class="form-control form-control-custom border-start-0" id="email" name="email" placeholder="name@example.com" required style="border-radius: 0 8px 8px 0 !important;">
+                </div>
+            </div>
+            
+            <div class="mb-3">
+                <label for="password" class="form-label text-muted small">Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary border-end-0 text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-lock"></i>
+                    </span>
+                    <input type="password" class="form-control form-control-custom border-start-0" id="password" name="password" placeholder="Min. 8 characters" required style="border-radius: 0 8px 8px 0 !important;">
+                </div>
+            </div>
+            
+            <div class="mb-4">
+                <label for="confirm_password" class="form-label text-muted small">Confirm Password</label>
+                <div class="input-group">
+                    <span class="input-group-text bg-transparent border-secondary border-end-0 text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                        <i class="bi bi-shield-lock"></i>
+                    </span>
+                    <input type="password" class="form-control form-control-custom border-start-0" id="confirm_password" name="confirm_password" placeholder="Repeat password" required style="border-radius: 0 8px 8px 0 !important;">
+                </div>
+            </div>
+            
+            <button type="submit" class="btn btn-custom-primary w-100 mb-3">
+                <i class="bi bi-person-plus-fill me-2"></i>Register
+            </button>
+        </form>
+        
+        <div class="text-center mt-3">
+            <span class="text-muted small">Already have an account?</span>
+            <a href="{{ url_for('login') }}" class="text-info text-decoration-none small fw-bold ms-1">Login here</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

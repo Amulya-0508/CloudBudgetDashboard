@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+
+{% block title %}Manage Expenses - Cloud Budget Tracker{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <!-- Log Cost Form Sidebar -->
+    <div class="col-lg-4">
+        <div class="glass-panel">
+            <h4 class="mb-3 fw-bold text-gradient-purple">Log Cloud Cost</h4>
+            <form action="{{ url_for('expenses') }}" method="POST" autocomplete="off">
+                
+                <div class="mb-3">
+                    <label for="service_name" class="form-label text-muted small">Cloud Service</label>
+                    <select class="form-select form-select-custom" id="service_name" name="service_name" required>
+                        <option value="" disabled selected>Select Service...</option>
+                        <option value="EC2 / Compute">EC2 / Compute</option>
+                        <option value="S3 / Storage">S3 / Storage</option>
+                        <option value="RDS / Database">RDS / Database</option>
+                        <option value="VPC / Networking">VPC / Networking</option>
+                        <option value="Lambda / Serverless">Lambda / Serverless</option>
+                        <option value="Other">Other (Specify below)...</option>
+                    </select>
+                </div>
+                
+                <!-- Custom Service Input (Hidden by default) -->
+                <div class="mb-3" id="custom_service_wrapper" style="display: none;">
+                    <label for="custom_service" class="form-label text-muted small">Custom Service Name</label>
+                    <input type="text" class="form-control form-control-custom" id="custom_service" name="custom_service" placeholder="e.g. Route53, EKS, CosmosDB">
+                </div>
+                
+                <div class="mb-3">
+                    <label for="amount" class="form-label text-muted small">Amount (₹)</label>
+                    <div class="input-group">
+                        <span class="input-group-text bg-transparent border-secondary text-muted" style="border: 1px solid rgba(255,255,255,0.1); border-radius: 8px 0 0 8px;">
+                            ₹
+                        </span>
+                        <input type="number" step="0.01" min="0.01" class="form-control form-control-custom" id="amount" name="amount" placeholder="0.00" required style="border-radius: 0 8px 8px 0 !important;">
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <label for="usage_date" class="form-label text-muted small">Billing/Usage Date</label>
+                    <input type="date" class="form-control form-control-custom" id="usage_date" name="usage_date" value="{{ today }}" required>
+                </div>
+                
+                <button type="submit" class="btn btn-custom-primary w-100">
+                    <i class="bi bi-check2-circle me-1"></i> Log Transaction
+                </button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Expenses Database Table -->
+    <div class="col-lg-8">
+        <div class="glass-panel">
+            <h4 class="mb-4 fw-bold text-gradient-cyan">Logged Expenditures</h4>
+            
+            <div class="table-responsive">
+                <table class="table table-custom mb-0">
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>Amount</th>
+                            <th>Billing Date</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if expenses %}
+                            {% for expense in expenses %}
+                                <tr>
+                                    <td>
+                                        {% set service = expense.service_name %}
+                                        <span class="badge-service 
+                                            {% if 'compute' in service.lower() or 'ec2' in service.lower() %}
+                                                service-compute
+                                            {% elif 'storage' in service.lower() or 's3' in service.lower() %}
+                                                service-storage
+                                            {% elif 'database' in service.lower() or 'rds' in service.lower() or 'sql' in service.lower() %}
+                                                service-database
+                                            {% elif 'network' in service.lower() or 'vpc' in service.lower() %}
+                                                service-networking
+                                            {% else %}
+                                                service-other
+                                            {% endif %}">
+                                            {{ service }}
+                                        </span>
+                                    </td>
+                                    <td class="fw-semibold">₹{{ expense.amount | format_currency }}</td>
+                                    <td class="text-muted small">{{ expense.usage_date }}</td>
+                                    <td class="text-end">
+                                        <div class="d-inline-flex gap-2">
+                                            <a href="{{ url_for('edit_expense', cost_id=expense.cost_id) }}" class="btn btn-sm btn-outline-info py-1 px-2" title="Edit">
+                                                <i class="bi bi-pencil-square"></i>
+                                            </a>
+                                            <form action="{{ url_for('delete_expense', cost_id=expense.cost_id) }}" method="POST" class="d-inline" onsubmit="return confirm('Are you sure you want to delete this expense?');">
+                                                <button type="submit" class="btn btn-sm btn-outline-danger py-1 px-2" title="Delete">
+                                                    <i class="bi bi-trash"></i>
+                                                </button>
+                                            </form>
+                                        </div>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center py-5 text-muted">
+                                    <i class="bi bi-receipt-cutoff fs-2 mb-2 d-block"></i>
+                                    No expense records found. Use the sidebar to log your first expenditure.
+                                </td>
+                            </tr>
+                        {% endif %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const serviceSelect = document.getElementById('service_name');
+        const customWrapper = document.getElementById('custom_service_wrapper');
+        const customInput = document.getElementById('custom_service');
+        
+        serviceSelect.addEventListener('change', function() {
+            if (this.value === 'Other') {
+                customWrapper.style.display = 'block';
+                customInput.setAttribute('required', 'required');
+                customInput.focus();
+            } else {
+                customWrapper.style.display = 'none';
+                customInput.removeAttribute('required');
+                customInput.value = '';
+            }
+        });
+    });
+</script>
+{% endblock %}
